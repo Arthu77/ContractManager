@@ -1,0 +1,139 @@
+<!--- 文件: templates/contracts/list.html --->
+{% extends "layout.html" %}
+
+{% block title %}合同列表{% endblock %}
+
+{% block content %}
+<div class="card shadow" style="max-width: 1400px; margin: 0 auto;">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">合同列表</h5>
+        <div class="btn-group">
+            <a href="{{ url_for('main.new_contract') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-lg"></i> 新建合同
+            </a>
+            <a href="{{ url_for('main.import_contracts') }}" class="btn btn-sm btn-success">
+                <i class="bi bi-upload"></i> 批量导入
+            </a>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <form method="get" class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="keyword" class="form-control" 
+                           placeholder="输入关键词" value="{{ request.args.keyword }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select" aria-label="合同分类筛选">
+                        <option value="0">全部分类</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.args.get('category', '0')|int == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select" aria-label="合同状态筛选">
+                        <option value="">全部状态</option>
+                        <option value="draft" {% if request.args.status == 'draft' %}selected{% endif %}>草稿</option>
+                        <option value="active" {% if request.args.status == 'active' %}selected{% endif %}>生效中</option>
+                        <option value="completed" {% if request.args.status == 'completed' %}selected{% endif %}>已完成</option>
+                        <option value="terminated" {% if request.args.status == 'terminated' %}selected{% endif %}>已终止</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">筛选</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive" style="margin: 0 15px;">
+            <table class="table table-hover align-middle" style="width: 100%;">
+                <thead class="table-light">
+                    <tr>
+                        <th>合同编号</th>
+                        <th>合同名称</th>
+                        <th>甲方/乙方</th>
+                        <th>签订日期</th>
+                        <th>金额</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contract in contracts.items %}
+                    <tr>
+                        <td>{{ contract.number }}</td>
+                        <td>
+                            <a href="{{ url_for('main.view_contract', id=contract.id) }}">
+                                {{ contract.title }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 200px;">
+                                {{ contract.party_a }} / {{ contract.party_b }}
+                            </div>
+                        </td>
+                        <td>{{ contract.sign_date.strftime('%Y-%m-%d') if contract.sign_date else '-' }}</td>
+                        <td>{{ "¥%.2f"|format(contract.value) if contract.value else '-' }}</td>
+                        <td>
+                            <span class="badge bg-{{ 
+                                'success' if contract.status == 'active' else 
+                                'warning' if contract.status == 'draft' else 
+                                'secondary' 
+                            }}">
+                                {{ contract.status|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ url_for('main.edit_contract', id=contract.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">编辑</a>
+                                <form method="post" action="{{ url_for('main.delete_contract', id=contract.id) }}" 
+                                      onsubmit="return confirm('确定要删除此合同吗？')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if contracts.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.list_contracts', page=contracts.prev_num, **request.args) }}">
+                        上一页
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in contracts.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == contracts.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.list_contracts', page=page_num, **request.args) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if contracts.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.list_contracts', page=contracts.next_num, **request.args) }}">
+                        下一页
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

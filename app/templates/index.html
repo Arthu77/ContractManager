@@ -1,0 +1,33 @@
+<!--- 文件: templates/index.html --->
+{% extends "layout.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">最近合同</h5>
+    </div>
+    <div class="card-body">
+        <div class="list-group">
+            {% for contract in contracts %}
+            <a href="{{ url_for('main.view_contract', id=contract.id) }}" 
+               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">{{ contract.title }}</h6>
+                    <small class="text-muted">{{ contract.number }} | {{ contract.party_a }} ↔ {{ contract.party_b }}</small>
+                </div>
+                <span class="badge bg-{{ 'success' if contract.status == 'active' else 'secondary' }}">
+                    {{ contract.status|upper }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-footer text-end">
+<a href="{{ url_for('main.new_contract') }}" class="btn btn-primary">
+            <i class="bi bi-file-earmark-plus"></i> 新建合同
+        </a>
+    </div>
+</div>
+{% endblock %}

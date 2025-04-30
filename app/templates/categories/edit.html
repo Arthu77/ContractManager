@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}编辑分类 - {{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">编辑分类 - {{ category.name }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                    {% for error in form.name.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else "")) }}
+                    {% for error in form.description.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">保存修改</button>
+                    <a href="{{ url_for('main.manage_categories') }}" class="btn btn-outline-secondary">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

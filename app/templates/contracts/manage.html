@@ -1,0 +1,102 @@
+<!--- 文件: templates/categories/manage.html --->
+{% extends "layout.html" %}
+{% block title %}分类管理{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">分类管理</h5>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#addCategoryForm">
+            添加分类
+        </button>
+    </div>
+    
+    <div class="card-body">
+        <!-- 添加分类表单 -->
+        <div class="collapse mb-5" id="addCategoryForm">
+            <form method="post">
+                {{ form.hidden_tag() }}
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                        {% for error in form.name.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-12">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=2) }}
+                        {% for error in form.description.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">保存分类</button>
+                        <button type="button" class="btn btn-outline-secondary" 
+                                data-bs-toggle="collapse" data-bs-target="#addCategoryForm">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 分类列表 -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>分类名称</th>
+                        <th>描述</th>
+                        <th>合同数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td class="fw-bold">{{ category.name }}</td>
+                        <td class="text-muted">{{ category.description|default('暂无描述', true) }}</td>
+                        <td>
+                            <span class="badge bg-primary rounded-pill">
+                                {{ category.contracts|length }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">编辑</a>
+                            <form method="post" action="{{ url_for('main.delete_category', id=category.id) }}" 
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                        onclick="return confirm('确定要删除这个分类吗？')">
+                                    删除
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">暂无分类数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 当表单验证失败时自动展开表单
+document.addEventListener('DOMContentLoaded', function() {
+    {% if form.errors %}
+    const formCollapse = new bootstrap.Collapse('#addCategoryForm');
+    formCollapse.show();
+    {% endif %}
+});
+</script>
+{% endblock %}

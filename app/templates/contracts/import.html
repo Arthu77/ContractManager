@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}导入合同{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header">
+        <h5 class="mb-0">从Excel导入合同</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                {{ form.excel_file.label(class="form-label") }}
+                {{ form.excel_file(class="form-control") }}
+                <div class="form-text">
+                    请上传Excel文件(.xlsx或.xls格式)，格式要求：
+                    <ul>
+                        <li>第一行是标题行</li>
+                        <li>包含合同基本信息：标题、编号、甲方、乙方等</li>
+                        <li>明细项需以JSON格式存储在指定列</li>
+                        <li><a href="{{ url_for('main.download_template') }}">下载模板</a>查看完整字段结构</li>
+                    </ul>
+                    <div class="alert alert-info mt-3">
+                        <strong>模板字段说明：</strong>
+                        <ul>
+                            <li>A列: 合同标题</li>
+                            <li>B列: 合同编号</li>
+                            <li>C列: 甲方名称</li>
+                            <li>D列: 乙方名称</li>
+                            <li>E列: 签订日期(YYYY-MM-DD)</li>
+                            <li>F列: 合同金额</li>
+                            <li>G列: 合同状态(draft/active/completed/terminated)</li>
+                            <li>H列: 明细项(JSON格式)</li>
+                        </ul>
+                    </div>
+                </div>
+                {% for error in form.excel_file.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">导入</button>
+                    <a href="{{ url_for('main.download_template') }}" class="btn btn-info">
+                        <i class="bi bi-download"></i> 下载模板
+                    </a>
+                    <a href="{{ url_for('main.list_contracts') }}" class="btn btn-outline-secondary">取消</a>
+                </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

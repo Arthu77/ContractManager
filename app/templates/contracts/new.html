@@ -1,0 +1,205 @@
+<!--- 文件: templates/contracts/new.html --->
+{% extends "layout.html" %}
+{% block title %}新建合同{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header">
+        <h5 class="mb-0">新建合同</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+                    {% for error in form.title.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form.number.label(class="form-label") }}
+                    {{ form.number(class="form-control" + (" is-invalid" if form.number.errors else "")) }}
+                    {% for error in form.number.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form.party_a.label(class="form-label") }}
+                    {{ form.party_a(class="form-control" + (" is-invalid" if form.party_a.errors else "")) }}
+                    {% for error in form.party_a.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form.party_b.label(class="form-label") }}
+                    {{ form.party_b(class="form-control" + (" is-invalid" if form.party_b.errors else "")) }}
+                    {% for error in form.party_b.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.sign_date.label(class="form-label") }}
+                    {{ form.sign_date(class="form-control" + (" is-invalid" if form.sign_date.errors else ""), type="date") }}
+                    {% for error in form.sign_date.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.effective_date.label(class="form-label") }}
+                    {{ form.effective_date(class="form-control" + (" is-invalid" if form.effective_date.errors else ""), type="date") }}
+                    {% for error in form.effective_date.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.expiry_date.label(class="form-label") }}
+                    {{ form.expiry_date(class="form-control" + (" is-invalid" if form.expiry_date.errors else ""), type="date") }}
+                    {% for error in form.expiry_date.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.value.label(class="form-label") }}
+                    <div class="input-group">
+                        <span class="input-group-text">¥</span>
+                        {{ form.value(class="form-control" + (" is-invalid" if form.value.errors else "")) }}
+                    </div>
+                    {% for error in form.value.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.status.label(class="form-label") }}
+                    {{ form.status(class="form-select" + (" is-invalid" if form.status.errors else "")) }}
+                    {% for error in form.status.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form.category_id.label(class="form-label") }}
+                    {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                    {% for error in form.category_id.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-12">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=3) }}
+                    {% for error in form.description.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-12">
+                    {{ form.attachments.label(class="form-label") }}
+                    {{ form.attachments(class="form-control" + (" is-invalid" if form.attachments.errors else "")) }}
+                    <small class="form-text text-muted">支持格式: PDF, DOC, DOCX, JPG, PNG</small>
+                    {% for error in form.attachments.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4">
+                <h5>合同明细</h5>
+                <div id="items-container">
+                    <div class="item-row row g-3 mb-3 align-items-center">
+                        <div class="col-md-3">
+                            <input type="text" name="item-name" class="form-control" placeholder="名称" required>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="item-spec" class="form-control" placeholder="规格">
+                        </div>
+                        <div class="col-md-1">
+                            <input type="text" name="item-unit" class="form-control" placeholder="单位">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" name="item-quantity" class="form-control" placeholder="数量" step="0.0001" required>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" name="item-price" class="form-control" placeholder="单价" step="0.0001" required>
+                        </div>
+                        <div class="col-md-1">
+                            <input type="number" name="item-amount" class="form-control" placeholder="金额" step="0.0001" readonly>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-item">删除</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="add-item">添加明细</button>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">保存合同</button>
+                <a href="{{ url_for('main.list_contracts') }}" class="btn btn-outline-secondary">取消</a>
+            </div>
+
+            <script>
+            // 添加明细行
+            document.getElementById('add-item').addEventListener('click', function() {
+                const container = document.getElementById('items-container');
+                const newRow = container.firstElementChild.cloneNode(true);
+                // 清空新行的输入值
+                newRow.querySelectorAll('input').forEach(input => input.value = '');
+                container.appendChild(newRow);
+                updateTotalValue();
+            });
+
+            // 删除明细行
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-item')) {
+                    const row = e.target.closest('.item-row');
+                    if (document.querySelectorAll('.item-row').length > 1) {
+                        row.remove();
+                        updateTotalValue();
+                    } else {
+                        alert('至少需要保留一个明细项');
+                    }
+                }
+            });
+
+            // 自动计算单行金额和总金额
+            document.addEventListener('input', function(e) {
+                if (e.target.name === 'item-quantity' || e.target.name === 'item-price') {
+                    const row = e.target.closest('.item-row');
+                    const quantity = parseFloat(row.querySelector('[name="item-quantity"]').value) || 0;
+                    const price = parseFloat(row.querySelector('[name="item-price"]').value) || 0;
+                    const amount = quantity * price;
+                    row.querySelector('[name="item-amount"]').value = amount.toFixed(4);
+                    updateTotalValue();
+                }
+            });
+
+            // 更新合同总金额
+            function updateTotalValue() {
+                let total = 0;
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const amount = parseFloat(row.querySelector('[name="item-amount"]').value) || 0;
+                    total += amount;
+                });
+                document.querySelector('[name="value"]').value = total.toFixed(4);
+            }
+
+            // 允许手动修改总金额
+            document.querySelector('[name="value"]').addEventListener('input', function() {
+                this.value = parseFloat(this.value) || 0;
+            });
+            </script>
+        </form>
+    </div>
+</div>
+{% endblock %}
