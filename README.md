@@ -55,7 +55,7 @@ cd contract-manager
 
 2. 安装依赖
 ```bash
-pip install Flask==2.0.1 Flask-SQLAlchemy==2.5.1 Flask-Migrate==3.1.0 PyQt5==5.15.4 PyQtWebEngine==5.15.5 openpyxl==3.0.9 python-dotenv==0.19.0
+pip install requirements.txt
 ```
 
 3. 初始化数据库
